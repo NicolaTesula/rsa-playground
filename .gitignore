@@ -1,2 +1,8 @@
 # Ignore build directory
 build
+
+# Ignore CTest Logs
+Testing
+
+# Ignore VSCode related settings
+.vscode

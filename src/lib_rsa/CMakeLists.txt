@@ -1,8 +1,16 @@
-add_library(lib_rsa rsa.cpp square_and_multiply.cpp)
+add_library(lib_rsa 
+    rsa.cpp 
+    square_and_multiply.cpp
+    rsa_decryptor.cpp
+    miller_rabin_test.cpp
+    prime_generator.cpp
+    extended_euclidean_algorithm.cpp
+)
 
 target_include_directories(lib_rsa PUBLIC include)
 
-target_compile_definitions(lib_rsa PRIVATE DEBUG=1)
+# Set this to ON to see debug prints
+target_compile_definitions(lib_rsa PRIVATE DEBUG=ON)
 
 # Need to link clang internal function on windows. TODO: create own function to circumvent this
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")

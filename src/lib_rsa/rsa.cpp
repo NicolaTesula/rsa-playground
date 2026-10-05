@@ -49,6 +49,8 @@ std::vector<std::uint32_t> rsa_encrypt_msg(const std::string& msg) {
  * @return std::uint32_t the resulting cipher
  */
 std::uint32_t rsa_encrypt_block(const std::uint32_t block, const std::uint64_t e, const std::uint64_t n) {
+    // Exponent 
+
     if (block == 0) return 0;
     if (block == 1) return 1;
 
