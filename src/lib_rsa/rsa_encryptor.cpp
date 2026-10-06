@@ -1,12 +1,21 @@
-#include <string>
-#include <cstdint>
-#include <vector>
+#include <cmath>
 
 #ifdef DEBUG
 #include <print>
 #endif
 
+#include "rsa_encryptor.hpp"
 #include "square_and_multiply.hpp"
+
+RSAEncryptor::RSAEncryptor(const PublicKey& pk) : m_pk(pk) {}
+
+std::uint64_t RSAEncryptor::encrypt_cipher(std::uint64_t m) {
+    return {};
+}
+
+std::vector<std::uint64_t> RSAEncryptor::encrypt_msg(const std::string& msg) const {
+    return {};
+}
 
 
 // TODO: Change block size from 32 bit to 56

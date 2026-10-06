@@ -7,33 +7,26 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(googletest)
-add_library(GTest::GTest INTERFACE IMPORTED) # apparently unnecessary
-target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-
+include(GoogleTest)
 
 # ------------------ TESTS -------------------
+add_executable(rsa_lib_tests_exe 
+    rsa_test.cpp
+    square_and_multiply_test.cpp
+    extended_euclidean_algorithm_test.cpp
+    miller_rabin_test.cpp
+    prime_generator_test.cpp
+    rsa_decryptor_test.cpp
+)
 
-add_executable(rsa_test rsa_test.cpp)
-add_executable(square_and_multiply_test square_and_multiply_test.cpp)
-add_executable(extended_euclidean_algorithm_test extended_euclidean_algorithm_test.cpp)
-
-target_link_libraries(rsa_test
+target_link_libraries(rsa_lib_tests_exe 
     PRIVATE
-        GTest::GTest
-        lib_rsa
-)
-target_link_libraries(square_and_multiply_test
-    PRIVATE 
-        GTest::GTest
-        lib_rsa
-)
-target_link_libraries(extended_euclidean_algorithm_test
-    PRIVATE
-        GTest::GTest
+        gtest_main
         lib_rsa
 )
 
-add_test(rsa_encryption_tests rsa_test)
-add_test(square_and_multiply_tests square_and_multiply_test)
-add_test(extended_euclidean_algorithm_tests extended_euclidean_algorithm_test)
+gtest_discover_tests(rsa_lib_tests_exe
+    PROPERTIES
+        ENVIRONMENT "GTEST_COLOR=1"
+)
