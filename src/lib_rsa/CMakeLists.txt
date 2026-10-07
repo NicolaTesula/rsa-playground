@@ -7,6 +7,7 @@ add_library(lib_rsa
     rsa_encryptor.cpp
     include/public_key.hpp
     include/rsa_encryptor.hpp
+    block_encoding.cpp
 )
 
 target_include_directories(lib_rsa PUBLIC include)

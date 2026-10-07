@@ -2,21 +2,24 @@
 
 #include "rsa_decryptor.hpp"
 #include "square_and_multiply.hpp"
+#include "rsa_encryptor.hpp"
 
 // Use Test Fixtures to test the RSADecryptor class
 class RSADecryptorTest : public ::testing::Test {
     protected:
-        RSADecryptor decryptor{};
+        RSADecryptor m_decryptor{};
+        RSAEncryptor m_encryptor{};
 
 #ifdef PRIVATE_TESTS
-        auto get_sk() const  { return decryptor.m_sk; }
-        auto get_phi() const { return decryptor.calc_phi(); }
+        auto get_sk() const  { return m_decryptor.m_sk; }
+        auto get_phi() const { return m_decryptor.calc_phi(); }
+        auto decrypt_cipher(const std::uint64_t c) const { return m_decryptor.decrypt_cipher(c); }
 #endif
 };
 
 // Tests whether n > 0 and e > 1
 TEST_F(RSADecryptorTest, PublicKeyIsValid) {
-    const auto& pk = decryptor.get_public_key();
+    const auto& pk = m_decryptor.get_public_key();
     EXPECT_GT(pk.n, 0ULL);
     EXPECT_GT(pk.e, 1ULL);
 }
@@ -33,41 +36,39 @@ TEST_F(RSADecryptorTest, ForbidLargeBitWidth) {
     }, std::invalid_argument);
 }
 
+#ifdef PRIVATE_TESTS
+// Test whether private key fulfills $e * d \equiv 1 \pmod(\phi(n))$
+TEST_F(RSADecryptorTest, CheckPrivateKeyCorrectness) {
+    const auto expected = 1;
+    const auto actual = mul_mod(m_decryptor.get_public_key().e, get_sk(), get_phi());
+    EXPECT_EQ(expected, actual);
+}
+
 // Encrypt and decrypt a test message to see if they match
 TEST_F(RSADecryptorTest, EncryptDecryptRoundtrip1) {
-    const auto& pk = decryptor.get_public_key();
+    const auto pk = m_decryptor.get_public_key();
     const std::uint64_t msg = 2;
     const auto encrypted = square_and_multiply(msg, pk.e, pk.n);
-    const auto decrypted = decryptor.decrypt_cipher(encrypted);
+    const auto decrypted = decrypt_cipher(encrypted);
     EXPECT_EQ(msg, decrypted);
 }
 
 // Encrypt and decrypt a test message to see if they match
 TEST_F(RSADecryptorTest, EncryptDecryptRoundtrip2) {
-    const auto& pk = decryptor.get_public_key();
+    const auto pk = m_decryptor.get_public_key();
     const std::uint64_t msg = 180'502'720'646'772'809;
     const auto encrypted = square_and_multiply(msg, pk.e, pk.n);
-    const auto decrypted = decryptor.decrypt_cipher(encrypted);
+    const auto decrypted = decrypt_cipher(encrypted);
     EXPECT_EQ(msg, decrypted);
 }
+#endif
 
-// TODO: finish once encryptor is done
-// TEST_F(RSADecryptorTest, EncryptDecryptRoundtrip3) {
-//     const auto& pk = decryptor.get_public_key();
-//     const std::uint64_t msg = 180'502'720'646'772'809;
-//     const auto encrypted = square_and_multiply(msg, pk.e, pk.n);
-//     const auto decrypted = decryptor.decrypt_cipher(encrypted);
-//     EXPECT_EQ(msg, decrypted);
-// }
-
-
-
-// ------------ Private Tests ----------------
-#ifdef PRIVATE_TESTS
-// Test whether private key fulfills $e * d \equiv 1 \pmod(\phi(n))$
-TEST_F(RSADecryptorTest, CheckPrivateKeyCorrectness) {
-    const auto expected = 1;
-    const auto actual = mul_mod(decryptor.get_public_key().e, get_sk(), get_phi());
+// Do a roundtrip with the encryptor :)
+TEST_F(RSADecryptorTest, EncryptDecryptRoundtrip3) {
+    const std::string expected = "Hello from RSA encryptor!";
+    const RSADecryptor decryptor{1'506'792'299, 1'829'390'351, 65537};
+    const RSAEncryptor encryptor{decryptor.get_public_key()};
+    const auto encrypted = encryptor.encrypt_msg(expected);
+    const auto actual = decryptor.decrypt_msg(encrypted);
     EXPECT_EQ(expected, actual);
 }
-#endif

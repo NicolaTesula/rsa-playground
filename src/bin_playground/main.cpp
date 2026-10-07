@@ -1,5 +1,11 @@
 #include <print>
 
+#include "tui.hpp"
+
 int main() {
-    std::print("Hello from C++");
+    TUI tui;
+
+    while (tui.is_running()) {
+        tui.run();
+    }
 }

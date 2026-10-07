@@ -7,7 +7,18 @@
 #include "prime_generator.hpp"
 #include "extended_euclidean_algorithm.hpp"
 #include "square_and_multiply.hpp"
+#include "block_encoding.hpp"
 
+
+RSADecryptor::RSADecryptor(const std::uint32_t p, const std::uint32_t q, const std::uint64_t e)
+: m_p(p), m_q(q) {
+    std::uint64_t n = static_cast<std::uint64_t>(p) * static_cast<std::uint64_t>(q);
+    m_pk = {n, e};
+    std::uint64_t phi = calc_phi();
+    const auto [g, u, v] = extended_euclidean_algorithm(e, phi);
+    if (g != 1) throw std::invalid_argument("phi(n) is divisible by e!");
+    m_sk = (u > 0) ? u : u + phi;
+}
 
 RSADecryptor::RSADecryptor(const std::uint8_t bit_width) {
     if (bit_width > 31) throw std::invalid_argument("31 bits is the max width supported right now!");
@@ -22,11 +33,22 @@ RSADecryptor::RSADecryptor(const std::uint8_t bit_width) {
     }
 }
 
-const PublicKey& RSADecryptor::get_public_key() const {
+const PublicKey RSADecryptor::get_public_key() const {
     return m_pk;
 }
 
-const std::uint64_t RSADecryptor::decrypt_cipher(const std::uint64_t c) const {
+std::string RSADecryptor::decrypt_msg(const std::vector<std::uint64_t>& cipher) const {
+    std::vector<std::uint64_t> decrypted_blocks;
+    decrypted_blocks.reserve(cipher.size());
+
+    for (auto c : cipher) {
+        decrypted_blocks.push_back(decrypt_cipher(c));
+    }
+
+    return blocks_to_string(decrypted_blocks);
+}
+
+std::uint64_t RSADecryptor::decrypt_cipher(const std::uint64_t c) const {
     return square_and_multiply(c, m_sk, m_pk.n);
 }
 

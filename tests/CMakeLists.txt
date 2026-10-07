@@ -11,12 +11,13 @@ FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
 # ------------------ TESTS -------------------
-add_executable(rsa_lib_tests_exe 
-    rsa_test.cpp
+add_executable(rsa_lib_tests_exe
     square_and_multiply_test.cpp
     extended_euclidean_algorithm_test.cpp
     miller_rabin_test.cpp
     prime_generator_test.cpp
+    block_encoding_test.cpp
+    rsa_encryptor_test.cpp
     rsa_decryptor_test.cpp
 )
 
@@ -25,6 +26,8 @@ target_link_libraries(rsa_lib_tests_exe
         gtest_main
         lib_rsa
 )
+
+target_compile_definitions(rsa_lib_tests_exe PRIVATE DEBUG=ON)
 
 gtest_discover_tests(rsa_lib_tests_exe
     PROPERTIES

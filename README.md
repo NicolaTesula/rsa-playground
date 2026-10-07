@@ -2,7 +2,12 @@
 
 ## About
 
-TODO
+It follows this pipeline:
+
+1. Pack the message string data into a vector of numbers smaller than the public module
+2. Encrypt each vector entry and return a vector of ciphers
+3. Decrypt the vector of ciphers into a vector of numbers
+4. Unpack the vector of numbers into a message string
 
 ## Stuff
 

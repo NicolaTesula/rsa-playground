@@ -70,7 +70,7 @@ MillerRabinResult miller_rabin_test(const std::uint32_t n, const std::uint8_t nu
 		MillerRabinResult round_result = miller_rabin_round(n, a);
 		if (round_result == MillerRabinResult::IsComposite) {
 #ifdef DEBUG
-			std::print("Found witness {}", a);
+			std::print("Found witness {} for number {} in round {}\n", a, n, i);
 #endif
 			return round_result;
 		}

@@ -1,69 +1,47 @@
-#include <cmath>
-
-#ifdef DEBUG
-#include <print>
-#endif
+#include <stdexcept>
+#include <bit>
 
 #include "rsa_encryptor.hpp"
 #include "square_and_multiply.hpp"
+#include "block_encoding.hpp"
+
+
+RSAEncryptor::RSAEncryptor() : m_pk{0,0} {}
 
 RSAEncryptor::RSAEncryptor(const PublicKey& pk) : m_pk(pk) {}
 
-std::uint64_t RSAEncryptor::encrypt_cipher(std::uint64_t m) {
-    return {};
+PublicKey RSAEncryptor::get_public_key() const {
+    return m_pk;
 }
 
-std::vector<std::uint64_t> RSAEncryptor::encrypt_msg(const std::string& msg) const {
-    return {};
+void RSAEncryptor::set_public_key(const PublicKey& pk) {
+    m_pk = pk;
 }
 
+std::uint64_t RSAEncryptor::encrypt_cipher(std::uint64_t m) const {
+    // m must be smaller than n to not lose information
+    if (m >= m_pk.n) throw std::invalid_argument("m must be smallert than n!");
 
-// TODO: Change block size from 32 bit to 56
+    return square_and_multiply(m, m_pk.e, m_pk.n);
+}
 
+std::vector<std::uint64_t> RSAEncryptor::encrypt_msg(const std::string& msg, int block_bit_width) const {
+    if (m_pk.n == 0) throw std::logic_error("No valid public key! Please set one first!");
 
-/**
- * @brief Splits a message into 32 bit blocks and applies the encryption to each block
- * 
- * @param msg the plain text
- * @return std::vector<std::uint64_t> the cipher text
- */
-std::vector<std::uint32_t> rsa_encrypt_msg(const std::string& msg) {
-    // EXAMPLE: msg = "A7 0F 3C 76 | 67 BC 91 20 | 11 00"
-#ifdef DEBUG
-    std::print("{}", msg);
-#endif
+    // Split the message into blocks numerically smaller than n
+    int module_bit_width = std::bit_width(m_pk.n);
 
-    // Vector to retun. Will hold the cipher text in the end
-    std::vector<std::uint32_t> cipher{};
-    cipher.reserve(std::ceil(msg.length() / 8));
+    // TODO: change the block bit width logic. latest when implementing probabilistic encryption
+    if (block_bit_width >= module_bit_width) block_bit_width = module_bit_width - 1;
 
-    const std::uint8_t BLOCK_SIZE = 4; // 4 bytes per block
+    std::vector<std::uint64_t> blocks = string_to_blocks(msg, block_bit_width);
 
-    // i is the index into msg
-    for (int i = 0; i < msg.size(); i += BLOCK_SIZE) {
-        std::uint32_t block = 0;
-
-        // j is the byte index into the block starting from least significant byte
-        // for (int j = 0; j < )
+    // Encrypt each block and gather the results in a new vector
+    std::vector<std::uint64_t> encrypted;
+    encrypted.reserve(blocks.size());
+    for (std::uint64_t block : blocks) {
+        encrypted.push_back(encrypt_cipher(block));
     }
 
-    return cipher;
-}
-
-/**
- * @brief Encrypts a single 32 bit number
- * 
- * @param block the number to encrypt
- * @param n the modul
- * @return std::uint32_t the resulting cipher
- */
-std::uint32_t rsa_encrypt_block(const std::uint32_t block, const std::uint64_t e, const std::uint64_t n) {
-    // Exponent 
-
-    if (block == 0) return 0;
-    if (block == 1) return 1;
-
-    std::uint32_t c = square_and_multiply(block, e, n);
-
-    return 0;
+    return encrypted;
 }

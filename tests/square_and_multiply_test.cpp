@@ -43,7 +43,7 @@ TEST(SNMTests, Mod_2_Even) {
 }
 
 // Having modul 2 should always return 1 with odd number
-TEST(SNMTestQ, Mod_2_Odd) {
+TEST(SNMTests, Mod_2_Odd) {
     const auto expected = 1;
     const auto actual = square_and_multiply(101, 3, 2);
     EXPECT_EQ(expected, actual);
