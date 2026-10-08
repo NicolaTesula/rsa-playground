@@ -1,41 +1,70 @@
-#include <vector>
-#include <string>
-#include <print>
-#include <iostream>
+#include <ftxui/component/app.hpp>
+#include <ftxui/component/component.hpp>
+#include <ftxui/dom/elements.hpp>
+#include <ftxui/screen/screen.hpp>
 
 #include "tui.hpp"
-#include "prime_generator.hpp"
+#include "views/view_main_menu.hpp"
+#include "views/view_generate_primes.hpp"
 
-
-TUI::TUI() : 
-m_is_running(true),
-m_select_options({"Generate Primes", "Encrypt Message"})
-{}
+// TODO
+TUI::TUI() : m_current_screen(ScreenState::MainMenu), m_app_context{} {}
 
 void TUI::run() {
-    std::print("Please select an option\n");
+    using namespace ftxui;
 
-    int counter = 1;
-    for (std::string& option : m_select_options) {
-        std::print("{}  {}\n", counter++, option);
-    }
+    // Used to decide which tab to draw
+    int active_tab = 0;
 
-    int user_selection;
-    std::cin >> user_selection;
+    // Get the current view for the left panel
+    Component menu_view = createMainMenuView(
+        m_app_context,
+        [&] (int selected) { active_tab = selected + 1; }
+    );
+    Component prime_gen_view = createPrimeGenView(m_app_context, [&] { active_tab = 0; });
+
+    // Container::Tab schaltet bei Änderung von active_tab automatisch live um:
+    Component screen_tabs = Container::Tab({
+        menu_view,
+        prime_gen_view
+    }, &active_tab);
+
+    // Connect the view with the layout
+    auto main_ui = Renderer(screen_tabs, [&] {
+        Element title = hbox({
+            text("Welcome to the RSA Playground!")
+                | bold 
+                | border 
+                | hcenter 
+                | flex 
+                | color(Color::Cyan)
+        });
     
-    switch (user_selection) {
-        case 1: {
-            std::print("Please input the number of bits your primes should have (max 31):\n");
-            int num_bits;
-            std::cin >> num_bits;
-            std::print("User requested two primes with {} bits. Coming right up!\n", num_bits);
-            std::uint64_t p, q = 0;
-            std::tie(p, q) = generate_primes(num_bits);
-            std::print("Your primes are {} and {}. Their product is: {}\n", p, q, p*q);
-        }
-    }
+        Element view_panel = window(text("Actions"), screen_tabs->Render())
+            | xflex;
+    
+        Element details_panel = window(text("Details"), paragraph(m_app_context.detailsContent))
+            | size(WIDTH, EQUAL, 42)
+            | size(HEIGHT, EQUAL, 15);
+    
+        return vbox({
+            title,
+            hbox({
+                view_panel,
+                details_panel
+            })
+        });
+    });
+    
+    // Start the main update loop
+    auto screen = App::Fullscreen(); // App::Fullscreen() to use entire terminal
+    screen.Loop(main_ui);
 }
 
-bool TUI::is_running() const {
-    return m_is_running;
+ScreenState TUI::getScreenState() const {
+    return m_current_screen;
+}
+
+void TUI::setScreenState(const ScreenState& screen_state) {
+    m_current_screen = screen_state;
 }
