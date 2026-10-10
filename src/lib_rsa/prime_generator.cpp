@@ -4,7 +4,7 @@
 #include "prime_generator.hpp"
 #include "miller_rabin_test.hpp"
 
-std::tuple<std::uint32_t, std::uint32_t> generate_primes(const std::uint8_t bit_width = 31) {
+std::tuple<std::uint32_t, std::uint32_t> generate_primes(const std::uint8_t bit_width, LogCallback log) {
     if (bit_width > 31) throw std::invalid_argument("Higher bit width primes not supported!");
 
     // Initialize RNG

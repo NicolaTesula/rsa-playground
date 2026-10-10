@@ -26,6 +26,7 @@ class RSADecryptor {
    
     public:
         RSADecryptor(const std::uint32_t p, const std::uint32_t q, const std::uint64_t e); // Constructor for tests mostly (unless you know your primes)
+        RSADecryptor(const std::uint32_t p, const std::uint32_t q);
         RSADecryptor(const std::uint8_t bit_width = 31);
         const PublicKey get_public_key() const;
         std::string decrypt_msg(const std::vector<std::uint64_t>& cipher) const;

@@ -136,6 +136,13 @@ TEST(MRTTests, Test_n_65537_num_rounds_100) {
     EXPECT_EQ(expected, actual);
 }
 
+// 20 is composite, so we expect to find a witness
+TEST(MRTTests, Test_n_20) {
+    const auto expected = MillerRabinResult::IsComposite;
+    const auto actual = miller_rabin_test(20);
+    EXPECT_EQ(expected, actual);
+}
+
 // Examples from Hoffstein, Pipher, Silverman. An Introduction to Mathematical Cryptography, p.132f
 // 561 is a Carmichael number, but with a = 2 we expect to recognize it as composite
 TEST(MRTTests, Test_n_561) {

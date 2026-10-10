@@ -17,7 +17,7 @@ class RSAEncryptor {
     public:
         RSAEncryptor();
         RSAEncryptor(const PublicKey& pk);
-        std::vector<std::uint64_t> encrypt_msg(const std::string& msg, int block_bit_width = 56) const;
+        std::vector<std::uint64_t> encrypt_msg(const std::string& msg) const;
         PublicKey get_public_key() const;
         void set_public_key(const PublicKey& pk);
 

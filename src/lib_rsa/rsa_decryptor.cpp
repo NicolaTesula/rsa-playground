@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <numeric>
 #include <random>
+#include <bit>
 
 #include "rsa_decryptor.hpp"
 #include "public_key.hpp"
@@ -12,12 +13,29 @@
 
 RSADecryptor::RSADecryptor(const std::uint32_t p, const std::uint32_t q, const std::uint64_t e)
 : m_p(p), m_q(q) {
+    if (p < 2 || q < 2 || p == q) {
+        throw std::invalid_argument("RSA requires two distinct primes greater than 1.");
+    }
+
     std::uint64_t n = static_cast<std::uint64_t>(p) * static_cast<std::uint64_t>(q);
     m_pk = {n, e};
+
     std::uint64_t phi = calc_phi();
     const auto [g, u, v] = extended_euclidean_algorithm(e, phi);
     if (g != 1) throw std::invalid_argument("phi(n) is divisible by e!");
+    
     m_sk = (u > 0) ? u : u + phi;
+}
+
+RSADecryptor::RSADecryptor(const std::uint32_t p, const std::uint32_t q)
+: m_p(p), m_q(q) {
+    if (p < 2 || q < 2 || p == q) {
+        throw std::invalid_argument("RSA requires two distinct primes greater than 1.");
+    }
+
+    if (try_create_key_pair() != KeyGenerationResult::Success) {
+        throw std::logic_error("Failed to create an RSA key pair from the supplied primes.");
+    }
 }
 
 RSADecryptor::RSADecryptor(const std::uint8_t bit_width) {
@@ -45,7 +63,8 @@ std::string RSADecryptor::decrypt_msg(const std::vector<std::uint64_t>& cipher) 
         decrypted_blocks.push_back(decrypt_cipher(c));
     }
 
-    return blocks_to_string(decrypted_blocks);
+    int block_bit_width = std::bit_width(m_pk.n) - 1;
+    return blocks_to_string(decrypted_blocks, block_bit_width);
 }
 
 std::uint64_t RSADecryptor::decrypt_cipher(const std::uint64_t c) const {

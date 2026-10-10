@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <numeric>
 
 #include "rsa_decryptor.hpp"
 #include "square_and_multiply.hpp"
@@ -22,6 +23,18 @@ TEST_F(RSADecryptorTest, PublicKeyIsValid) {
     const auto& pk = m_decryptor.get_public_key();
     EXPECT_GT(pk.n, 0ULL);
     EXPECT_GT(pk.e, 1ULL);
+}
+
+TEST(RSADecryptorConstructionTest, CreatesKeyFromSuppliedPrimes) {
+    constexpr std::uint32_t p = 1009;
+    constexpr std::uint32_t q = 1013;
+    RSADecryptor decryptor{p, q};
+    const PublicKey public_key = decryptor.get_public_key();
+
+    const std::uint64_t phi =
+        static_cast<std::uint64_t>(p - 1) * static_cast<std::uint64_t>(q - 1);
+    EXPECT_EQ(public_key.n, static_cast<std::uint64_t>(p) * q);
+    EXPECT_EQ(std::gcd(public_key.e, phi), 1ULL);
 }
 
 // Should throw an exception when trying to construct with too large bit width

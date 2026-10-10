@@ -14,7 +14,7 @@ include(GoogleTest)
 add_executable(rsa_lib_tests_exe
     square_and_multiply_test.cpp
     extended_euclidean_algorithm_test.cpp
-    miller_rabin_test.cpp
+    miller_rabin_test_test.cpp
     prime_generator_test.cpp
     block_encoding_test.cpp
     rsa_encryptor_test.cpp

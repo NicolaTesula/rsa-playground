@@ -6,4 +6,4 @@
 #include <string>
 
 using LogCallback = std::function<void(const std::string&)>;
-std::tuple<std::uint32_t, std::uint32_t> generate_primes(const std::uint8_t bit_width, LogCallback log = nullptr);
+std::tuple<std::uint32_t, std::uint32_t> generate_primes(const std::uint8_t bit_width = 31, LogCallback log = nullptr);

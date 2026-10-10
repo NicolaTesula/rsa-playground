@@ -25,14 +25,15 @@ std::uint64_t RSAEncryptor::encrypt_cipher(std::uint64_t m) const {
     return square_and_multiply(m, m_pk.e, m_pk.n);
 }
 
-std::vector<std::uint64_t> RSAEncryptor::encrypt_msg(const std::string& msg, int block_bit_width) const {
+std::vector<std::uint64_t> RSAEncryptor::encrypt_msg(const std::string& msg) const {
     if (m_pk.n == 0) throw std::logic_error("No valid public key! Please set one first!");
 
     // Split the message into blocks numerically smaller than n
     int module_bit_width = std::bit_width(m_pk.n);
-
+    int block_bit_width = module_bit_width - 1;
     // TODO: change the block bit width logic. latest when implementing probabilistic encryption
-    if (block_bit_width >= module_bit_width) block_bit_width = module_bit_width - 1;
+    // (pass 2nd argument "bits_for_rnd" or smth like that?)
+
 
     std::vector<std::uint64_t> blocks = string_to_blocks(msg, block_bit_width);
 
