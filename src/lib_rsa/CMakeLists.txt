@@ -14,12 +14,12 @@ target_include_directories(lib_rsa PUBLIC include)
 
 # Set this to ON to see debug prints
 target_compile_definitions(lib_rsa 
-    PRIVATE DEBUG=ON 
+    PRIVATE DEBUG=ON
     PUBLIC PRIVATE_TESTS=1
 )
 
-# Need to link clang internal function on windows. TODO: create own function to circumvent this
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+# Clang on Windows needs the compiler-rt library for 128-bit arithmetic.
+if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     execute_process(
         COMMAND ${CMAKE_CXX_COMPILER} --print-resource-dir
         OUTPUT_VARIABLE CLANG_RESOURCE_DIR
