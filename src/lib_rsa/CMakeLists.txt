@@ -5,8 +5,7 @@ add_library(lib_rsa
     prime_generator.cpp
     extended_euclidean_algorithm.cpp
     rsa_encryptor.cpp
-    include/public_key.hpp
-    include/rsa_encryptor.hpp
+    rsa_encryptor.cpp
     block_encoding.cpp
 )
 

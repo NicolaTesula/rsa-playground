@@ -18,7 +18,7 @@ The en- and decryption follows this pipeline:
 4. Unpack the vector of numbers into a message string
 
 This project also includes a sample executable `bin_playground`, showcasing the library's functionality.
-`bin_playground` is a simple TUI using the FTXUI library to render to the terminal.
+`bin_playground` is a simple TUI using the [FTXUI](https://github.com/ArthurSonzogni/FTXUI) library to render to the terminal.
 To see how to use it, please see the [Usage](#usage) section.
 
 ## Build
@@ -30,7 +30,7 @@ To see how to use it, please see the [Usage](#usage) section.
 ##### CMake
 
 CMake is a build system generator that configures the project, fetches dependencies, and builds the targets automatically for you.
-For this project you will need CMake 3.20 or newer.
+For this project you will require CMake 4.4 or newer.
 If you don't have CMake installed or need to update it, download it from [cmake.org](https://cmake.org/) or use your platform's package manager.
 
 ##### Clang
@@ -39,18 +39,13 @@ You will need a compiler with C++23 support.
 LLVM's Clang is recommended here, since this project currently uses Clang's `__int128` extension for modular arithmetic.
 Donwload and install Clang from the [LLVM project](https://github.com/llvm/llvm-project/releases) or via your platform's package manager.
 
-> [!NOTE]
-> On Windows, use `clang-cl` with the MSVC C++ Build Tools and Windows SDK;
-> the GNU-style `clang++` driver can select an incompatible CMake link mode for the MSVC ABI.
-
 ##### Ninja
 
 We recommend Ninja as the build system.
-Install it from
-[ninja-build.org](https://ninja-build.org/) or with your platform's package manager.
+Install it from [ninja-build.org](https://ninja-build.org/) or with your platform's package manager.
 
 > [!IMPORTANT]
-> If you are using the official installers, make sure to select `ADD TO PATH` or similar to guarantee that it is found system-wide.
+> If you are using the official installers, make sure to select `ADD TO PATH` or similar to guarantee that it is available system-wide.
 > The build process will not succeed otherwise.
 
 #### 1.2 Package Manager Installation
@@ -65,9 +60,7 @@ winget install --id LLVM.LLVM -e
 winget install --id Ninja-build.Ninja -e
 ```
 
-Install Visual Studio Build Tools from the official Visual Studio downloads page if they are not already present, and select the **Desktop development
-with C++** workload in Visual Studio Installer. Open a new PowerShell window
-after installations, then verify:
+After installation reopen PowerShell and verify the installations:
 
 ```powershell
 cmake --version
@@ -76,7 +69,7 @@ ninja --version
 ```
 
 If `clang-cl` is not found, add LLVM's default install directory
-(`C:\Program Files\LLVM\bin`) to the Windows `Path` environment variable in
+(by default `C:\Program Files\LLVM\bin`) to the Windows `Path` environment variable in
 **Settings > System > About > Advanced system settings > Environment Variables**,
 then open a new terminal and retry the checks.
 
@@ -145,18 +138,16 @@ Run the following from the project's root directory.
 On Windows, configure the build with the MSVC-compatible Clang driver:
 
 ```powershell
-cmake -S . -B build-clangcl -G Ninja `
-  -DCMAKE_C_COMPILER="C:\Program Files\LLVM\bin\clang-cl.exe" `
-  -DCMAKE_CXX_COMPILER="C:\Program Files\LLVM\bin\clang-cl.exe"
+cmake -S . -B build -G Ninja `
+  -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" `
+  -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" `
+  -DCMAKE_RC_COMPILER="C:/Program Files/LLVM/bin/llvm-rc.exe"
 ```
-
-> [!IMPORTANT]
-> Run this from **Developer PowerShell for Visual Studio 2022** (or an x64 Visual Studio Developer Command Prompt) so the Windows SDK resource compiler and MSVC libraries are available.
 
 Then build the library, tests and executable with
 
 ```sh
-cmake --build build-clangcl
+cmake --build build
 ```
 
 #### macOS Build
@@ -190,20 +181,19 @@ cmake --build build
 
 ### 4. Run the executable
 
-The executable is written to `build/bin` on macOS/Linux and
-`build-clangcl/bin` on Windows.
-
-On Windows you can run it from the repository rootw with
+The executable is located in `build/bin`. To execute it, run
 
 ```powershell
-.\build-clangcl\bin\bin_playground.exe
+.\build\bin\bin_playground.exe
 ```
 
-On macOS or Linux, use:
+on Windows or
 
 ```sh
 ./build/bin/bin_playground
 ```
+
+on macOS and Ubuntu / Debian.
 
 ### 5. Run tests (optional)
 
@@ -212,14 +202,6 @@ Run the registered tests from the repository root with:
 ```sh
 ctest --test-dir build --output-on-failure
 ```
-
-on macOS or Linux and with
-
-```sh
-ctest --test-dir build-clangcl --output-on-failure
-```
-
-on Windows.
 
 ## Stuff
 

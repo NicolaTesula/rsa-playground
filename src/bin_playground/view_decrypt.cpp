@@ -2,12 +2,13 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <vector>
 
 #include <ftxui/component/event.hpp>
+#include <ftxui/screen/string.hpp>
 
 #include "view_decrypt.hpp"
 #include "rsa_decryptor.hpp"
-#include <ftxui/screen/string.hpp>
 
 using namespace ftxui;
 
