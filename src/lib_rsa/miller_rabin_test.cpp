@@ -1,6 +1,7 @@
 #include <numeric>
 #include <random>
 #include <cstdint>
+#include <stdexcept>
 
 #ifdef DEBUG
 #include <print>
@@ -15,6 +16,10 @@ MillerRabinResult miller_rabin_round(const std::uint32_t n, std::uint32_t a) {
     if (a == 0) throw std::invalid_argument("0 is no valid candidate for a witness!");
     if (a == 1) throw std::invalid_argument("1 is no valid candidate for a witness!");
 	if (a > n) throw std::invalid_argument("Base larger than n could lead to wrong decision!");
+
+    if (n == 2 || n == 3) {
+        return MillerRabinResult::IsLikelyPrime;
+    }
     
     // Can return early if n is even or a and n share a factor
     const int gcd = std::gcd<std::uint32_t, std::uint32_t>(a, n);
@@ -44,7 +49,9 @@ MillerRabinResult miller_rabin_round(const std::uint32_t n, std::uint32_t a) {
 		if (a % n == n-1) {
 			return MillerRabinResult::IsLikelyPrime;
 		}
-		a = (a * a) % n;
+		a = static_cast<std::uint32_t>(
+            (static_cast<std::uint64_t>(a) * a) % n
+        );
 	}
 	
     // No number in sequence was -1, thus n cannot be prime
@@ -57,10 +64,12 @@ MillerRabinResult miller_rabin_test(const std::uint32_t n, const std::uint8_t nu
     if (n == 0) throw std::invalid_argument("0 is neither prime nor composite!");
 	if (n == 1) throw std::invalid_argument("1 is neither prime nor composite!");
     if (num_rounds == 0) throw std::invalid_argument("Cannot decide with no round. Please use at least 10 rounds!");
+    if (n == 2 || n == 3) return MillerRabinResult::IsLikelyPrime;
+    if (n % 2 == 0) return MillerRabinResult::IsComposite;
 
     // Initialize RNG
     static std::mt19937 gen(std::random_device{}()); // Get 64 bit mersenne twister and seed the generator
-    std::uniform_int_distribution<std::uint32_t> dist(2, n-1); // Defines the range
+    std::uniform_int_distribution<std::uint32_t> dist(2, n - 2);
 
 	for (int i = 0; i < num_rounds; i++) {
 		// Pick random number between 2 and n-1 as witness

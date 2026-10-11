@@ -41,7 +41,7 @@ struct StatusContext {
 };
 
 struct PrimalityContext {
-    int num_to_check;
+    std::uint32_t num_to_check = 0;
     std::string user_input;
     std::optional<MillerRabinResult> test_result;
 };

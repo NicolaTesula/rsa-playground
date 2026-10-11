@@ -98,12 +98,12 @@ Component createEncryptView(AppContext& app_ctx) {
                 vbox({
                     filler(),
                     encrypt_btn->Render(),
-                    filler()
                 }),
+                filler(),
                 window(
                     text("Encrypted"),
                     encrypted_output->Render()
-                        | size(WIDTH, EQUAL, 30)
+                        | size(WIDTH, EQUAL, 17)
                         | size(HEIGHT, EQUAL, viewport_height)
                 )
             })

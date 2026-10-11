@@ -180,7 +180,6 @@ Component createDecryptView(AppContext& app_ctx) {
                     filler(),
                     use_encrypted->Render(),
                     decrypt_btn->Render(),
-                    filler()
                 }),
                 window(
                     text("Decrypted"),

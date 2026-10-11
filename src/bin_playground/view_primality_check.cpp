@@ -1,3 +1,7 @@
+#include <charconv>
+#include <cstdint>
+#include <system_error>
+
 #include "view_primality_check.hpp"
 #include "miller_rabin_test.hpp"
 
@@ -23,13 +27,35 @@ Component createPrimalityCheckView(AppContext& app_ctx) {
         Color::White
     );
     button_options.label = "Check";
-    button_options.on_click = [&] {
+    button_options.on_click = [ctx = &app_ctx] {
+        ctx->primality_ctx.test_result.reset();
         try {
-            app_ctx.primality_ctx.num_to_check = std::stoi(app_ctx.primality_ctx.user_input);
-            app_ctx.primality_ctx.test_result = miller_rabin_test(app_ctx.primality_ctx.num_to_check);
+            const std::string& input = ctx->primality_ctx.user_input;
+            std::uint32_t number = 0;
+            const auto [end, error] = std::from_chars(
+                input.data(),
+                input.data() + input.size(),
+                number
+            );
+            if (input.empty() || error != std::errc{} || end != input.data() + input.size()) {
+                throw std::invalid_argument("Enter a valid non-negative 32-bit integer.");
+            }
+
+            ctx->primality_ctx.num_to_check = number;
+            ctx->primality_ctx.test_result = miller_rabin_test(number);
+            ctx->status_ctx.status_content.reset();
         } catch (const std::exception& error) {
-            app_ctx.status_ctx.status_content = error.what();
+            ctx->status_ctx.status_content = error.what();
         }
+    };
+    button_options.transform = [] (const EntryState& state) {
+        Element button = hbox({
+            filler(),
+            text(state.label),
+            filler(),
+        }) | size(WIDTH, EQUAL, 20) | border;
+
+        return button;
     };
     Component check_btn = Button(button_options);
 
@@ -42,13 +68,19 @@ Component createPrimalityCheckView(AppContext& app_ctx) {
     return Renderer(controls, [=, ctx = &app_ctx] {
         std::string test_result_txt = "";
         if (ctx->primality_ctx.test_result.has_value()) {
-            test_result_txt = (app_ctx.primality_ctx.test_result == MillerRabinResult::IsComposite) ? "Is composite" : "Is probably prime";
+            test_result_txt =
+                *ctx->primality_ctx.test_result == MillerRabinResult::IsComposite
+                    ? "Is composite"
+                    : "Is probably prime";
         }
 
         return vbox({
             input_field->Render(),
             hbox({
-                check_btn->Render() | border | flex,
+                vbox({
+                    filler(),
+                    check_btn->Render(),
+                }),
                 window(
                     text("Result"),
                     text(test_result_txt)

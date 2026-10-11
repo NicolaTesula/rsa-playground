@@ -83,11 +83,15 @@ Component createPrimeGenView(AppContext& app_ctx) {
                 bit_width_text
             }),
             hbox({
-                generate_btn->Render(),
+                vbox({
+                    filler(),
+                    generate_btn->Render()
+                }),
                 filler(),
-                prime_p,
-                filler(),
-                prime_q
+                hbox({
+                    prime_p,
+                    prime_q
+                }),
             }) | flex
         });
     });

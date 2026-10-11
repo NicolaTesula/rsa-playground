@@ -136,6 +136,18 @@ TEST(MRTTests, Test_n_65537_num_rounds_100) {
     EXPECT_EQ(expected, actual);
 }
 
+TEST(MRTTests, Test_n_2) {
+    EXPECT_EQ(MillerRabinResult::IsLikelyPrime, miller_rabin_test(2));
+}
+
+TEST(MRTTests, Test_n_3) {
+    EXPECT_EQ(MillerRabinResult::IsLikelyPrime, miller_rabin_test(3));
+}
+
+TEST(MRTTests, Test_large_prime) {
+    EXPECT_EQ(MillerRabinResult::IsLikelyPrime, miller_rabin_test(4'294'967'291));
+}
+
 // 20 is composite, so we expect to find a witness
 TEST(MRTTests, Test_n_20) {
     const auto expected = MillerRabinResult::IsComposite;
