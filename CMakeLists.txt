@@ -1,6 +1,5 @@
-# Created with inspiration from "Coding with Mat"
+cmake_minimum_required(VERSION 3.14)
 
-cmake_minimum_required(VERSION 4.4)
 project(RSA_Playground LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
