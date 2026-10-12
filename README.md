@@ -1,7 +1,30 @@
 # RSA Playground
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [About](#about)
+- [Build](#build)
+  - [Windows (native)](#windows-native)
+    - [1. Install dependencies](#1-install-dependencies)
+  - [2. Clone this repository](#2-clone-this-repository)
+  - [3. Build the library and executable](#3-build-the-library-and-executable)
+  - [macOS](#macos)
+    - [1. Install dependencies](#1-install-dependencies-1)
+    - [2. Clone this repository](#2-clone-this-repository-1)
+    - [3. Build the library and executable](#3-build-the-library-and-executable-1)
+  - [Ubuntu / Debian / Windows (WSL)](#ubuntu--debian--windows-wsl)
+    - [1. Install dependencies](#1-install-dependencies-2)
+    - [2. Clone this repository](#2-clone-this-repository-2)
+    - [3. Build the library and executable](#3-build-the-library-and-executable-2)
+  - [Run](#run)
+  - [Testing](#testing)
+- [Usage](#usage)
+- [Stuff](#stuff)
+- [TODOs](#todos)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## About
 
