@@ -88,6 +88,7 @@ winget install --id Ninja-build.Ninja -e
 After installation is complete, reopen PowerShell and verify the installations:
 
 ```powershell
+git --version
 cmake --version
 ninja --version
 ."C:\Program Files\LLVM\bin\clang-cl.exe" --version
@@ -151,10 +152,10 @@ Use Homebrew's reported prefix to select its Clang explicitly:
 ```sh
 LLVM_PREFIX="$(brew --prefix llvm)"
 export PATH="$LLVM_PREFIX/bin:$PATH"
-cmake --version
-clang++ --version
-ninja --version
 git --version
+cmake --version
+ninja --version
+clang++ --version
 ```
 
 #### 2. Clone this repository
@@ -208,8 +209,8 @@ available:
 ```sh
 git --version
 cmake --version
-clang++ --version
 ninja --version
+clang++ --version
 ```
 
 #### 2. Clone this repository
