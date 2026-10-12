@@ -23,40 +23,27 @@ To see how to use it, please see the [Usage](#usage) section.
 
 ## Build
 
-### 1. Install build dependencies
+Before being able to build you will need to install the following dependencies:
 
-#### 1.1 The Dependencies
+- CMake is a build system generator that configures the project, fetches dependencies, and builds the targets automatically for you.
+For this project you will require CMake 4.4 or newer.
 
-##### Visual Studio Build Tools (Windows only)
+- You will need a compiler with C++23 support.
+LLVM's Clang is currently recommended, as this project uses Clang's `__int128` extension for modular arithmetic.
+A MSVC build will not successfully compile.
+
+- As for the build system we recommend Ninja
+
+### Windows (native)
+
+#### 1. Install dependencies
 
 First, if you are on Windows and do not already have Visual Studio setup with the necessary C++ development tools, install the [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2026).
 When being prompted, install the `Desktop development for C++` workload.
 
-##### CMake
-
-CMake is a build system generator that configures the project, fetches dependencies, and builds the targets automatically for you.
-For this project you will require CMake 4.4 or newer.
-If you don't have CMake installed or need to update it, download it from [cmake.org](https://cmake.org/) or use your platform's package manager.
-
-##### Clang
-
-You will need a compiler with C++23 support.
-LLVM's Clang is currently recommended, as this project uses Clang's `__int128` extension for modular arithmetic.
-A MSVC build will not successfully compile.
-Donwload and install Clang from the [LLVM project](https://github.com/llvm/llvm-project/releases) or via your platform's package manager.
-
-##### Ninja
-
-We recommend Ninja as the build system.
-Install it from [ninja-build.org](https://ninja-build.org/) or with your platform's package manager.
-
 > [!IMPORTANT]
 > If you are using the official installers, make sure to select `ADD TO PATH` or similar to guarantee that it is available system-wide.
 > The build process will not succeed otherwise.
-
-#### 1.2 Package Manager Installation
-
-##### Windows (native)
 
 If `winget` is available, install the standalone tools:
 
@@ -74,7 +61,45 @@ ninja --version
 "C:\Program Files\LLVM\bin\clang-cl.exe" --version
 ```
 
-##### macOS
+### 2. Clone this repository
+
+If you have [Git](https://git-scm.com/) installed, simply clone this GitHub repository into a directory of your choice:
+
+```sh
+git clone https://github.com/NicolaTesula/rsa-playground.git
+```
+
+and then enter the repository with
+
+```sh
+cd rsa-playground
+```
+
+If you do not have Git installed, use GitHub's **Code > Download ZIP** option instead, unpack it in a directory of your choice and navigate to the project's root directory in a terminal.
+
+### 3. Build the library and executable
+
+> [!NOTE]
+> Run the following from the project's root directory.
+
+On Windows, configure the build with the MSVC-compatible Clang driver:
+
+```powershell
+cmake -S . -B build -G Ninja `
+  -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" `
+  -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" `
+  -DCMAKE_RC_COMPILER="C:/Program Files/LLVM/bin/llvm-rc.exe"
+```
+
+Then build the library, tests and executable with
+
+```sh
+cmake --build build
+```
+
+### macOS
+
+#### 1. Install dependencies
 
 > [!NOTE]
 > These instructions are AI generated and have not yet been testes.
@@ -100,7 +125,43 @@ ninja --version
 git --version
 ```
 
-##### Ubuntu / Debian
+#### 2. Clone this repository
+
+If you have [Git](https://git-scm.com/) installed, simply clone this GitHub repository into a directory of your choice:
+
+```sh
+git clone https://github.com/NicolaTesula/rsa-playground.git
+```
+
+and then enter the repository with
+
+```sh
+cd rsa-playground
+```
+
+If you do not have Git installed, use GitHub's **Code > Download ZIP** option instead, unpack it in a directory of your choice and navigate to the project's root directory in a terminal.
+
+#### 3. Build the library and executable
+
+> [!NOTE]
+> Run the following from the project's root directory.
+
+On macOS, select Homebrew's LLVM compiler explicitly if it is not already on `PATH`:
+
+```sh
+cmake -S . -B build -G Ninja \
+  -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++"
+```
+
+Then build the library, tests and executable with
+
+```sh
+cmake --build build
+```
+
+### Ubuntu / Debian
+
+#### 1. Install dependencies
 
 Open your terminal and run
 
@@ -118,7 +179,7 @@ clang++ --version
 ninja --version
 ```
 
-### 2. Clone this repository
+#### 2. Clone this repository
 
 If you have [Git](https://git-scm.com/) installed, simply clone this GitHub repository into a directory of your choice:
 
@@ -134,43 +195,10 @@ cd rsa-playground
 
 If you do not have Git installed, use GitHub's **Code > Download ZIP** option instead, unpack it in a directory of your choice and navigate to the project's root directory in a terminal.
 
-### 3. Build the library and executable
+#### 3. Build the library and executable
 
-Run the following from the project's root directory.
-
-#### Windows Build
-
-On Windows, configure the build with the MSVC-compatible Clang driver:
-
-```powershell
-cmake -S . -B build -G Ninja `
-  -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" `
-  -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang-cl.exe" `
-  -DCMAKE_RC_COMPILER="C:/Program Files/LLVM/bin/llvm-rc.exe"
-```
-
-Then build the library, tests and executable with
-
-```sh
-cmake --build build
-```
-
-#### macOS Build
-
-On macOS, select Homebrew's LLVM compiler explicitly if it is not already on `PATH`:
-
-```sh
-cmake -S . -B build -G Ninja \
-  -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++"
-```
-
-Then build the library, tests and executable with
-
-```sh
-cmake --build build
-```
-
-#### Ubuntu / Debian Build
+> [!NOTE]
+> Run the following from the project's root directory.
 
 Configure the project with Ninja and Clang:
 
@@ -184,7 +212,7 @@ Then build the library, tests and executable with
 cmake --build build
 ```
 
-### 4. Run the executable
+### Run
 
 The executable is located in `build/bin`. To execute it, run
 
@@ -200,13 +228,27 @@ on Windows or
 
 on macOS and Ubuntu / Debian.
 
-### 5. Run tests (optional)
+### Testing
+
+TODO: How to add tests
 
 Run the registered tests from the repository root with:
 
 ```sh
 ctest --test-dir build --output-on-failure
 ```
+
+## Usage
+
+Start the executable from the repository root using the platform-specific command
+listed below. Generate a key pair first, then enter a message in the Encrypt
+panel and select **Encrypt**. In the Decrypt panel, enable **Use Encrypted** to
+copy the generated cipher blocks into its input field, then select **Decrypt**.
+The primality-check panel accepts an integer and reports whether it is composite
+or probably prime.
+
+This is an educational playground, not production-ready cryptography. Its RSA
+implementation does not provide padding or authenticated encryption.
 
 ## Stuff
 
@@ -229,24 +271,8 @@ On macOS and Linux, the compiler driver normally links the appropriate runtime
 for its platform, so CMake does not add the Windows `.lib` there. The use of
 `unsigned __int128` is a compiler extension rather than a portable C++ type.
 
-## Usage
-
-Start the executable from the repository root using the platform-specific command
-listed below. Generate a key pair first, then enter a message in the Encrypt
-panel and select **Encrypt**. In the Decrypt panel, enable **Use Encrypted** to
-copy the generated cipher blocks into its input field, then select **Decrypt**.
-The primality-check panel accepts an integer and reports whether it is composite
-or probably prime.
-
-This is an educational playground, not production-ready cryptography. Its RSA
-implementation does not provide padding or authenticated encryption.
-
 ## TODOs
 
 - Indistinguishability Game
 - Factorization attacks on weak prime numbers
 - General Factorization algorithms (incl. Shor's algorithm? would need Qiskit maybe)
-
-## Credits
-
-Directory structure inspired by [Coding with Mat](https://www.youtube.com/watch?v=mdkVnmj32ZQ)
