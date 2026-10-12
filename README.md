@@ -70,7 +70,7 @@ ninja --version
 ."C:\Program Files\LLVM\bin\clang-cl.exe" --version
 ```
 
-### 2. Clone this repository
+#### 2. Clone this repository
 
 Clone the GitHub repository into a directory of your choice:
 
@@ -84,7 +84,7 @@ and then enter it with
 cd rsa-playground
 ```
 
-### 3. Build the library and executable
+#### 3. Build the library and executable
 
 > [!NOTE]
 > Run the following within the project's root directory.
@@ -220,7 +220,7 @@ Then build the library, tests and executable with
 cmake --build build
 ```
 
-### Run
+## Run
 
 The executable is located in `build/bin`. To execute it, run
 
@@ -236,7 +236,7 @@ on Windows or
 
 on macOS and Ubuntu / Debian.
 
-### Testing
+## Testing
 
 TODO: How to add tests
 
