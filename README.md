@@ -21,18 +21,27 @@ This project also includes a sample executable `bin_playground`, showcasing the 
 `bin_playground` is a simple TUI using the [FTXUI](https://github.com/ArthurSonzogni/FTXUI) library to render to the terminal.
 To see how to use it, please see the [Usage](#usage) section.
 
+> [!NOTE]
+> This is an educational playground, not production-ready cryptography.
+> Its RSA implementation does not provide padding or authenticated encryption as of right now.
+
 ## Build
 
 Before being able to build you will need to install the following dependencies:
 
+- Git is a version control software system mostly used for collaborative coding.
+
 - CMake is a build system generator that configures the project, fetches dependencies, and builds the targets automatically for you.
 For this project you will require CMake 4.4 or newer.
 
-- You will need a compiler with C++23 support.
-LLVM's Clang is currently recommended, as this project uses Clang's `__int128` extension for modular arithmetic.
+- LLVM's Clang is the compiler currently recommended for this project, as it uses Clang's `__int128` extension for modular arithmetic.
 A MSVC build will not successfully compile.
 
-- As for the build system we recommend Ninja
+- Ninja is a build system specifically designed with CMake and speed in mind.
+
+> [!IMPORTANT]
+> If you decide to install these with dedicated installer programs instead of the instructions below, make sure to select `ADD TO PATH` or similar to guarantee that they are available system-wide.
+> The build process will not succeed otherwise.
 
 ### Windows (native)
 
@@ -41,46 +50,41 @@ A MSVC build will not successfully compile.
 First, if you are on Windows and do not already have Visual Studio setup with the necessary C++ development tools, install the [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2026).
 When being prompted, install the `Desktop development for C++` workload.
 
-> [!IMPORTANT]
-> If you are using the official installers, make sure to select `ADD TO PATH` or similar to guarantee that it is available system-wide.
-> The build process will not succeed otherwise.
-
-If `winget` is available, install the standalone tools:
+Afterwards open a Windows PowerShell and install the following packages:
 
 ```powershell
+winget install --id Git.Git -e
 winget install --id Kitware.CMake -e
 winget install --id LLVM.LLVM -e
 winget install --id Ninja-build.Ninja -e
 ```
 
-After installation reopen PowerShell and verify the installations:
+After installation is complete, reopen PowerShell and verify the installations:
 
 ```powershell
 cmake --version
 ninja --version
-"C:\Program Files\LLVM\bin\clang-cl.exe" --version
+."C:\Program Files\LLVM\bin\clang-cl.exe" --version
 ```
 
 ### 2. Clone this repository
 
-If you have [Git](https://git-scm.com/) installed, simply clone this GitHub repository into a directory of your choice:
+Clone the GitHub repository into a directory of your choice:
 
 ```sh
 git clone https://github.com/NicolaTesula/rsa-playground.git
 ```
 
-and then enter the repository with
+and then enter it with
 
 ```sh
 cd rsa-playground
 ```
 
-If you do not have Git installed, use GitHub's **Code > Download ZIP** option instead, unpack it in a directory of your choice and navigate to the project's root directory in a terminal.
-
 ### 3. Build the library and executable
 
 > [!NOTE]
-> Run the following from the project's root directory.
+> Run the following within the project's root directory.
 
 On Windows, configure the build with the MSVC-compatible Clang driver:
 
@@ -110,11 +114,11 @@ Follow Homebrew's official instructions at [brew.sh](https://brew.sh/), then ins
 
 ```sh
 xcode-select --install
-brew install cmake ninja llvm
+brew install git cmake ninja llvm
 ```
 
-Homebrew does not always put its LLVM binaries directly on `PATH`. Use
-Homebrew's reported prefix to select its Clang explicitly:
+Homebrew does not always put its LLVM binaries directly on `PATH`.
+Use Homebrew's reported prefix to select its Clang explicitly:
 
 ```sh
 LLVM_PREFIX="$(brew --prefix llvm)"
@@ -127,26 +131,24 @@ git --version
 
 #### 2. Clone this repository
 
-If you have [Git](https://git-scm.com/) installed, simply clone this GitHub repository into a directory of your choice:
+Clone the GitHub repository into a directory of your choice:
 
 ```sh
 git clone https://github.com/NicolaTesula/rsa-playground.git
 ```
 
-and then enter the repository with
+and then enter it with
 
 ```sh
 cd rsa-playground
 ```
 
-If you do not have Git installed, use GitHub's **Code > Download ZIP** option instead, unpack it in a directory of your choice and navigate to the project's root directory in a terminal.
-
 #### 3. Build the library and executable
 
 > [!NOTE]
-> Run the following from the project's root directory.
+> Run the following within the project's root directory.
 
-On macOS, select Homebrew's LLVM compiler explicitly if it is not already on `PATH`:
+Select Homebrew's LLVM compiler explicitly if it is not already on `PATH`:
 
 ```sh
 cmake -S . -B build -G Ninja \
@@ -159,7 +161,7 @@ Then build the library, tests and executable with
 cmake --build build
 ```
 
-### Ubuntu / Debian
+### Ubuntu / Debian / Windows (WSL)
 
 #### 1. Install dependencies
 
@@ -167,13 +169,14 @@ Open your terminal and run
 
 ```sh
 sudo apt update
-sudo apt install cmake ninja-build clang
+sudo apt install git cmake ninja-build clang
 ```
 
-Check that the installed CMake version is at least 3.20 and that all tools are
+Check that the installed CMake version is at least 4.4 and that all tools are
 available:
 
 ```sh
+git --version
 cmake --version
 clang++ --version
 ninja --version
@@ -181,19 +184,17 @@ ninja --version
 
 #### 2. Clone this repository
 
-If you have [Git](https://git-scm.com/) installed, simply clone this GitHub repository into a directory of your choice:
+Clone the GitHub repository into a directory of your choice:
 
 ```sh
 git clone https://github.com/NicolaTesula/rsa-playground.git
 ```
 
-and then enter the repository with
+and then enter it with
 
 ```sh
 cd rsa-playground
 ```
-
-If you do not have Git installed, use GitHub's **Code > Download ZIP** option instead, unpack it in a directory of your choice and navigate to the project's root directory in a terminal.
 
 #### 3. Build the library and executable
 
@@ -246,9 +247,6 @@ panel and select **Encrypt**. In the Decrypt panel, enable **Use Encrypted** to
 copy the generated cipher blocks into its input field, then select **Decrypt**.
 The primality-check panel accepts an integer and reports whether it is composite
 or probably prime.
-
-This is an educational playground, not production-ready cryptography. Its RSA
-implementation does not provide padding or authenticated encryption.
 
 ## Stuff
 
