@@ -1,5 +1,8 @@
 # RSA Playground
 
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 ## About
 
 This is a simple library `lib_rsa` containing functionality relevant to RSA such as
@@ -101,12 +104,14 @@ Then build the library, tests and executable with
 cmake --build build
 ```
 
+---
+
 ### macOS
 
 #### 1. Install dependencies
 
 > [!NOTE]
-> These instructions are AI generated and have not yet been testes.
+> These instructions are AI generated and have not yet been tested.
 > Please follow them with caution.
 
 Install Apple's command-line tools and Homebrew if they are not already installed.
@@ -160,6 +165,8 @@ Then build the library, tests and executable with
 ```sh
 cmake --build build
 ```
+
+---
 
 ### Ubuntu / Debian / Windows (WSL)
 
