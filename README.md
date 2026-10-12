@@ -27,6 +27,11 @@ To see how to use it, please see the [Usage](#usage) section.
 
 #### 1.1 The Dependencies
 
+##### Visual Studio Build Tools (Windows only)
+
+First, if you are on Windows and do not already have Visual Studio setup with the necessary C++ development tools, install the [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2026).
+When being prompted, install the `Desktop development for C++` workload.
+
 ##### CMake
 
 CMake is a build system generator that configures the project, fetches dependencies, and builds the targets automatically for you.
@@ -36,7 +41,8 @@ If you don't have CMake installed or need to update it, download it from [cmake.
 ##### Clang
 
 You will need a compiler with C++23 support.
-LLVM's Clang is recommended here, since this project currently uses Clang's `__int128` extension for modular arithmetic.
+LLVM's Clang is currently recommended, as this project uses Clang's `__int128` extension for modular arithmetic.
+A MSVC build will not successfully compile.
 Donwload and install Clang from the [LLVM project](https://github.com/llvm/llvm-project/releases) or via your platform's package manager.
 
 ##### Ninja
@@ -50,7 +56,7 @@ Install it from [ninja-build.org](https://ninja-build.org/) or with your platfor
 
 #### 1.2 Package Manager Installation
 
-##### Windows (PowerShell)
+##### Windows (native)
 
 If `winget` is available, install the standalone tools:
 
@@ -64,16 +70,15 @@ After installation reopen PowerShell and verify the installations:
 
 ```powershell
 cmake --version
-clang-cl --version
 ninja --version
+"C:\Program Files\LLVM\bin\clang-cl.exe" --version
 ```
 
-If `clang-cl` is not found, add LLVM's default install directory
-(by default `C:\Program Files\LLVM\bin`) to the Windows `Path` environment variable in
-**Settings > System > About > Advanced system settings > Environment Variables**,
-then open a new terminal and retry the checks.
-
 ##### macOS
+
+> [!NOTE]
+> These instructions are AI generated and have not yet been testes.
+> Please follow them with caution.
 
 Install Apple's command-line tools and Homebrew if they are not already installed.
 Follow Homebrew's official instructions at [brew.sh](https://brew.sh/), then install the build tools:
