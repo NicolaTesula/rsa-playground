@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #ifdef DEBUG
-#include <print>
+#include <iostream>
 #endif
 
 #include "block_encoding.hpp"
@@ -40,7 +40,7 @@ TEST(BlockEncodingTest, BlockToStr_HelloWorldVec1) {
     const std::string expected = "Hello World!";
     const auto actual = blocks_to_string(str_vec, 64);
 #ifdef DEBUG 
-    std::print("Expected: {} Actual: {}\n", expected, actual);
+    std::cout << "Expected: " << expected << " Actual: " << actual << '\n';
 #endif
     EXPECT_EQ(expected, actual);
 }

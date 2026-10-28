@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 #ifdef DEBUG
-#include <print>
+#include <iostream>
 #endif
 
 #include "miller_rabin_test.hpp"
@@ -79,7 +79,7 @@ MillerRabinResult miller_rabin_test(const std::uint32_t n, const std::uint8_t nu
 		MillerRabinResult round_result = miller_rabin_round(n, a);
 		if (round_result == MillerRabinResult::IsComposite) {
 #ifdef DEBUG
-			std::print("Found witness {} for number {} in round {}\n", a, n, i);
+			std::cout << "Found witness " << a << " for number " << n << " in round " << i << '\n';
 #endif
 			return round_result;
 		}

@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #ifdef DEBUG
-#include <print>
+#include <iostream>
 #endif
 
 /**

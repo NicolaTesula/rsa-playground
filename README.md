@@ -58,9 +58,9 @@ Before being able to build you will need to install the following dependencies:
 - Git is a version control software system mostly used for collaborative coding.
 
 - CMake is a build system generator that configures the project, fetches dependencies, and builds the targets automatically for you.
-For this project you will require CMake 4.4 or newer.
+For this project you will require CMake 3.20 or newer.
 
-- LLVM's Clang is the compiler currently recommended for this project, as it uses Clang's `__int128` extension for modular arithmetic.
+- Clang (Apple Clang or LLVM Clang) or GCC is the compiler currently recommended for this project, as it uses the `__int128` extension for modular arithmetic.
 A MSVC build will not successfully compile.
 
 - Ninja is a build system specifically designed with CMake and speed in mind.
@@ -134,27 +134,57 @@ cmake --build build
 
 #### 1. Install dependencies
 
-> [!NOTE]
-> These instructions are AI generated and have not yet been tested.
-> Please follow them with caution.
+macOS includes Apple's Clang compiler and Git out of the box via Xcode Command Line Tools. Apple Clang natively supports the `unsigned __int128` extension used by this project, so **you do not need to install LLVM**.
 
-Install Apple's command-line tools and Homebrew if they are not already installed.
-Follow Homebrew's official instructions at [brew.sh](https://brew.sh/), then install the build tools:
+First, install Apple's command-line tools if they are not already installed:
 
 ```sh
 xcode-select --install
-brew install git cmake ninja llvm
 ```
 
-Homebrew does not always put its LLVM binaries directly on `PATH`.
-Use Homebrew's reported prefix to select its Clang explicitly:
+Next, you will need **CMake** (and optionally **Ninja** for faster parallel builds). Choose the method that best matches your system:
+
+> [!WARNING]
+> **For Intel Macs (macOS 14 Sonoma or older):**
+> Homebrew has moved Intel macOS to Tier 3 (unsupported) and discontinued pre-compiled binary bottles for Intel chips. Do **not** run `brew install llvm`, as Homebrew will attempt to compile LLVM from source (which can take 6+ hours and usually fails). If `brew install cmake ninja` gives bottle errors, use **Option A (pip)** or **Option C (official installer)** below.
+
+##### Option A: Using `pip` (Fastest, zero compilation — recommended for Intel Macs)
+
+If Python is available on your machine, pre-compiled wheels install in seconds without any compilation:
 
 ```sh
-LLVM_PREFIX="$(brew --prefix llvm)"
-export PATH="$LLVM_PREFIX/bin:$PATH"
+pip3 install cmake ninja
+```
+
+##### Option B: Using Homebrew (Apple Silicon or Intel when bottles are available)
+
+```sh
+brew install cmake ninja
+```
+
+##### Option C: Official Installer (No package manager needed)
+
+1. Download CMake for macOS (`.dmg`) from [cmake.org/download](https://cmake.org/download/).
+2. Open the DMG and drag `CMake.app` to `/Applications`.
+3. Enable command-line access via:
+   ```sh
+   sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
+   ```
+*(Ninja is optional; if not installed, CMake will automatically use Apple's built-in `make` tool.)*
+
+##### Option D: Using MacPorts (Alternative package manager for Intel Macs)
+
+If you use MacPorts, pre-built binary packages for macOS 14 Intel are maintained:
+
+```sh
+sudo port install cmake ninja
+```
+
+Verify that the tools are available:
+
+```sh
 git --version
 cmake --version
-ninja --version
 clang++ --version
 ```
 
@@ -177,16 +207,17 @@ cd rsa-playground
 > [!NOTE]
 > Run the following within the project's root directory.
 
-Select Homebrew's LLVM compiler explicitly if it is not already on `PATH`:
+If you have Ninja installed:
 
 ```sh
-cmake -S . -B build -G Ninja \
-  -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++"
+cmake -S . -B build -G Ninja
+cmake --build build
 ```
 
-Then build the library, tests and executable with
+Or without Ninja (using macOS's built-in `make`):
 
 ```sh
+cmake -S . -B build
 cmake --build build
 ```
 
@@ -203,7 +234,7 @@ sudo apt update
 sudo apt install git cmake ninja-build clang
 ```
 
-Check that the installed CMake version is at least 4.4 and that all tools are
+Check that the installed CMake version is at least 3.20 and that all tools are
 available:
 
 ```sh
