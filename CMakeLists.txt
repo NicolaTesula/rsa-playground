@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF) # probably unnecessary
 
+# Make dependency downloads visible and avoid silent "hanging"
+set(FETCHCONTENT_QUIET OFF CACHE BOOL "" FORCE)
+
 enable_testing()
 
 add_subdirectory(src)

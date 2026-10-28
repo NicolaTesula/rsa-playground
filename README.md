@@ -1,5 +1,30 @@
 # RSA Playground
 
+## About
+
+This is a simple library `lib_rsa` containing functionality relevant to RSA such as
+
+- the Miller-Rabin primality test
+- a prime number generator (using Miller-Rabin)
+- the Square and Multiply algorithm for fast modular exponentiation
+- an RSA encryptor to handle encryption and
+- an RSA decryptor to handle decryption
+
+The en- and decryption follows this pipeline:
+
+1. Pack the message string data into a vector of numbers smaller than the public module
+2. Encrypt each vector element to receive a vector of ciphers
+3. Decrypt the vector of ciphers back into a vector of numbers
+4. Unpack the vector of numbers into a message string
+
+This project also includes a sample executable `bin_playground`, showcasing the library's functionality.
+`bin_playground` is a simple TUI using the [FTXUI](https://github.com/ArthurSonzogni/FTXUI) library to render to the terminal.
+To see how to use it, please see the [Usage](#usage) section.
+
+> [!NOTE]
+> This is an educational playground, not production-ready cryptography.
+> Its RSA implementation does NOT provide padding or authenticated encryption as of right now.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
@@ -25,31 +50,6 @@
 - [TODOs](#todos)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## About
-
-This is a simple library `lib_rsa` containing functionality relevant to RSA such as
-
-- the Miller-Rabin primality test
-- a prime number generator (using Miller-Rabin)
-- the Square and Multiply algorithm for fast modular exponentiation
-- an RSA encryptor to handle encryption and
-- an RSA decryptor to handle decryption
-
-The en- and decryption follows this pipeline:
-
-1. Pack the message string data into a vector of numbers smaller than the public module
-2. Encrypt each vector element to receive a vector of ciphers
-3. Decrypt the vector of ciphers back into a vector of numbers
-4. Unpack the vector of numbers into a message string
-
-This project also includes a sample executable `bin_playground`, showcasing the library's functionality.
-`bin_playground` is a simple TUI using the [FTXUI](https://github.com/ArthurSonzogni/FTXUI) library to render to the terminal.
-To see how to use it, please see the [Usage](#usage) section.
-
-> [!NOTE]
-> This is an educational playground, not production-ready cryptography.
-> Its RSA implementation does not provide padding or authenticated encryption as of right now.
 
 ## Build
 
@@ -156,6 +156,25 @@ If Python is available on your machine, pre-compiled wheels install in seconds w
 pip3 install cmake ninja
 ```
 
+> [!IMPORTANT]
+> **Fixing "command not found: cmake" after pip install:**
+> On macOS, `pip` installs executable binaries into Python's user bin directory (e.g. `~/Library/Python/3.x/bin`), which is **not** on `$PATH` by default.
+>
+> Add it to your `PATH` by running:
+> ```sh
+> echo 'export PATH="$(python3 -m site --user-base)/bin:$PATH"' >> ~/.zshrc
+> source ~/.zshrc
+> ```
+> *(Or if you use bash instead of zsh: `echo 'export PATH="$(python3 -m site --user-base)/bin:$PATH"' >> ~/.bash_profile && source ~/.bash_profile`)*
+>
+> **Alternative (Zero PATH setup):**
+> You can also run CMake and Ninja directly as Python modules without modifying your `PATH`:
+> ```sh
+> python3 -m cmake --version
+> python3 -m cmake -S . -B build -G Ninja
+> python3 -m cmake --build build
+> ```
+
 ##### Option B: Using Homebrew (Apple Silicon or Intel when bottles are available)
 
 ```sh
@@ -185,6 +204,7 @@ Verify that the tools are available:
 ```sh
 git --version
 cmake --version
+ninja --version
 clang++ --version
 ```
 
