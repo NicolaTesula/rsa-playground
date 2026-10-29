@@ -31,7 +31,6 @@ To see how to use it, please see the [Usage](#usage) section.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [About](#about)
 - [Build](#build)
   - [Windows (native)](#windows-native)
     - [1. Install dependencies](#1-install-dependencies)
@@ -39,6 +38,10 @@ To see how to use it, please see the [Usage](#usage) section.
     - [3. Build the library and executable](#3-build-the-library-and-executable)
   - [macOS](#macos)
     - [1. Install dependencies](#1-install-dependencies-1)
+      - [Option A: Using `pip` (Fastest, zero compilation — recommended for Intel Macs)](#option-a-using-pip-fastest-zero-compilation--recommended-for-intel-macs)
+      - [Option B: Using Homebrew (Apple Silicon or Intel when bottles are available)](#option-b-using-homebrew-apple-silicon-or-intel-when-bottles-are-available)
+      - [Option C: Official Installer (No package manager needed)](#option-c-official-installer-no-package-manager-needed)
+      - [Option D: Using MacPorts (Alternative package manager for Intel Macs)](#option-d-using-macports-alternative-package-manager-for-intel-macs)
     - [2. Clone this repository](#2-clone-this-repository-1)
     - [3. Build the library and executable](#3-build-the-library-and-executable-1)
   - [Ubuntu / Debian / Windows (WSL)](#ubuntu--debian--windows-wsl)
@@ -48,7 +51,7 @@ To see how to use it, please see the [Usage](#usage) section.
 - [Run](#run)
 - [Testing](#testing)
 - [Usage](#usage)
-- [Stuff](#stuff)
+- [Additional info](#additional-info)
 - [TODOs](#todos)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
