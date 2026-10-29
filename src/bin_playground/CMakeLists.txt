@@ -22,6 +22,9 @@ add_executable(bin_playground
     view_encrypt.cpp
     view_decrypt.cpp
     view_status_bar.cpp
+    view_indistinguishability.cpp
+    view_factorize.cpp
+    view_private_key.cpp
 )
 
 target_include_directories(bin_playground PUBLIC include)

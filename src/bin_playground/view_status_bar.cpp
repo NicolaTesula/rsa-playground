@@ -13,7 +13,13 @@ Component createStatusBarView(AppContext &app_ctx) {
         } else {
             keys_txt = "PUB:   [not generated]";
         }
-        keys_txt += "\nPRIV: [d: TODO]";
+        if (app_ctx.decrypt_ctx.decryptor.has_value()) {
+            keys_txt += "\nPRIV: [d: "
+                + std::to_string(app_ctx.decrypt_ctx.decryptor->get_private_key())
+                + "]";
+        } else {
+            keys_txt += "\nPRIV: [not generated]";
+        }
 
         Element keys_box = hbox({
             text(keys_txt)
@@ -25,10 +31,8 @@ Component createStatusBarView(AppContext &app_ctx) {
                 text(keys_txt),
                 filler() | size(WIDTH, EQUAL, 15),
                 separator(),
-                filler(),
                 text(app_ctx.status_ctx.status_content.value_or(""))
-                    | size(WIDTH, EQUAL, 42) 
-                    | center
+                    | size(WIDTH, GREATER_THAN, 100)
             })
         );
     });

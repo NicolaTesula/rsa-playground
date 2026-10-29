@@ -1,8 +1,9 @@
 #include <stdexcept>
+#include <cstdint>
 
 #include "extended_euclidean_algorithm.hpp"
 
-std::tuple<std::int64_t, std::int64_t, std::int64_t> extended_euclidean_algorithm(std::uint64_t a, std::uint64_t b) {
+EuclideanResult extended_euclidean_algorithm(std::uint64_t a, std::uint64_t b) {
     // Efficient implementation after Hoffstein, Pipher, Silverman. An Introduction to Mathematical Cryptography, p.50
     // TODO: handle this differently?
     if (b == 0) throw std::invalid_argument("b cannot be 0 (Division by 0 error)!");
@@ -30,5 +31,5 @@ std::tuple<std::int64_t, std::int64_t, std::int64_t> extended_euclidean_algorith
     std::int64_t v = static_cast<std::int64_t>(
         (g - static_cast<__int128>(a) * u) / static_cast<__int128>(b) // avoid overflow
     );
-    return {g, u, v}; // g auto casted to u64
+    return {g, u, v};
 }

@@ -4,6 +4,9 @@
 #include "view_encrypt.hpp"
 #include "view_decrypt.hpp"
 #include "view_status_bar.hpp"
+#include "view_indistinguishability.hpp"
+#include "view_factorize.hpp"
+#include "view_private_key.hpp"
 
 using namespace ftxui;
 
@@ -13,10 +16,14 @@ Component createDashboardView(AppContext& app_ctx) {
     Component encrypt = createEncryptView(app_ctx);
     Component decrypt = createDecryptView(app_ctx);
     Component status_bar = createStatusBarView(app_ctx);
+    Component ind_game = createIndistinguishabilityView(app_ctx);
+    Component factorize = createFactorizeView(app_ctx);
+    Component private_key = createPrivateKeyView(app_ctx);
 
     Component root = Container::Vertical({
         Container::Horizontal({gen_primes, check_primality}),
-        Container::Horizontal({encrypt, decrypt})
+        Container::Horizontal({encrypt, decrypt}),
+        Container::Horizontal({factorize, private_key}),
     });
 
     return Renderer(root, [=] {
@@ -36,7 +43,15 @@ Component createDashboardView(AppContext& app_ctx) {
                     window(text("Decrypt"), decrypt->Render()),
                     filler()
                 },
-            }) | flex, // gridbox
+                {
+                    filler(),
+                    window(text("Factorize"), factorize->Render()),
+                    window(text("Extract private key"), private_key->Render()),
+                    filler(),
+                    filler()
+                }
+            }) | center, // gridbox
+            filler(),
             status_bar->Render()
         });
     });

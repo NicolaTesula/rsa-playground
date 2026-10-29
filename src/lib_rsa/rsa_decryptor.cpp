@@ -2,6 +2,7 @@
 #include <numeric>
 #include <random>
 #include <bit>
+#include <stdexcept>
 
 #include "rsa_decryptor.hpp"
 #include "public_key.hpp"
@@ -13,32 +14,39 @@
 
 RSADecryptor::RSADecryptor(const std::uint32_t p, const std::uint32_t q, const std::uint64_t e)
 : m_p(p), m_q(q) {
+    // Early return
     if (p < 2 || q < 2 || p == q) {
         throw std::invalid_argument("RSA requires two distinct primes greater than 1.");
     }
 
+    // Compute the modulus n and assign the public key
     std::uint64_t n = static_cast<std::uint64_t>(p) * static_cast<std::uint64_t>(q);
     m_pk = {n, e};
 
+    // Check whether e is relative prime to phi(n)
     std::uint64_t phi = calc_phi();
     const auto [g, u, v] = extended_euclidean_algorithm(e, phi);
     if (g != 1) throw std::invalid_argument("phi(n) is divisible by e!");
     
+    // Assign the private key
     m_sk = (u > 0) ? u : u + phi;
 }
 
 RSADecryptor::RSADecryptor(const std::uint32_t p, const std::uint32_t q)
 : m_p(p), m_q(q) {
+    // Early return
     if (p < 2 || q < 2 || p == q) {
         throw std::invalid_argument("RSA requires two distinct primes greater than 1.");
     }
 
+    // Pass the key generation to the try_create_key_pair function
     if (try_create_key_pair() != KeyGenerationResult::Success) {
         throw std::logic_error("Failed to create an RSA key pair from the supplied primes.");
     }
 }
 
 RSADecryptor::RSADecryptor(const std::uint8_t bit_width) {
+    // Early return
     if (bit_width > 31) throw std::invalid_argument("31 bits is the max width supported right now!");
 
     // On default construction generate a random pair of large primes
@@ -55,19 +63,27 @@ const PublicKey RSADecryptor::get_public_key() const {
     return m_pk;
 }
 
+RSADecryptor::PrivateKey RSADecryptor::get_private_key() const {
+    return m_sk;
+}
+
 std::string RSADecryptor::decrypt_msg(const std::vector<std::uint64_t>& cipher) const {
+    // Instantiate the memory to hold the decrypted blocks
     std::vector<std::uint64_t> decrypted_blocks;
     decrypted_blocks.reserve(cipher.size());
 
+    // Decrypt each cipher block in the cipher vector
     for (auto c : cipher) {
         decrypted_blocks.push_back(decrypt_cipher(c));
     }
 
+    // Convert the numerical decrypted vevtor back into a readable string
     int block_bit_width = std::bit_width(m_pk.n) - 1;
     return blocks_to_string(decrypted_blocks, block_bit_width);
 }
 
 std::uint64_t RSADecryptor::decrypt_cipher(const std::uint64_t c) const {
+    // Use square_and_multiply to calculate c^d mod n
     return square_and_multiply(c, m_sk, m_pk.n);
 }
 

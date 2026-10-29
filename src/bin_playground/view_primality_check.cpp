@@ -70,8 +70,8 @@ Component createPrimalityCheckView(AppContext& app_ctx) {
         if (ctx->primality_ctx.test_result.has_value()) {
             test_result_txt =
                 *ctx->primality_ctx.test_result == MillerRabinResult::IsComposite
-                    ? "Is composite"
-                    : "Is probably prime";
+                    ? std::to_string(ctx->primality_ctx.num_to_check) + " is composite"
+                    : std::to_string(ctx->primality_ctx.num_to_check) + " is probably prime";
         }
 
         return vbox({

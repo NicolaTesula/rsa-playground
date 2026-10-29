@@ -2,13 +2,15 @@
 
 ## About
 
-This is a simple library `lib_rsa` containing functionality relevant to RSA such as
+This is a simple library (`lib_rsa`) containing functionality relevant to RSA such as
 
 - the Miller-Rabin primality test
 - a prime number generator (using Miller-Rabin)
 - the Square and Multiply algorithm for fast modular exponentiation
 - an RSA encryptor to handle encryption and
 - an RSA decryptor to handle decryption
+- a simple version of Fermat factorization
+- Pollard's p-1 factorization algorithm
 
 The en- and decryption follows this pipeline:
 
@@ -299,26 +301,44 @@ cmake --build build
 
 The executable is located in `build/bin`. To execute it, run
 
-```powershell
-.\build\bin\bin_playground.exe
-```
-
-on Windows or
-
 ```sh
 ./build/bin/bin_playground
 ```
 
-on macOS and Ubuntu / Debian.
-
 ## Testing
-
-TODO: How to add tests
 
 Run the registered tests from the repository root with:
 
 ```sh
 ctest --test-dir build --output-on-failure
+```
+
+You can also add your own tests by adding them either in the existing "*_test.cpp"s in '/tests' or by adding your own 'cpp' files containing tests.
+You can use the following skeleton to add tests:
+
+```C++
+#include <gtest/gtest.h>
+
+// This checks whether the expected output matches the result
+TEST(TestSuit, TestName) {
+    const auto expected{val1, val2, ...};
+    const auto actual = function_to_test(in1, in2, ...);
+
+    EXPECT_EQ(expected, actual);
+}
+
+// This checks for expected errors and compares error messages
+TEST(TestSuite, OtherTestName) {
+    EXPECT_THROW({
+        try {
+            function_to_throw(invalid_argument);
+        } catch(const std::invalid_argument& e) {
+            // This tests that the exception has the correct message
+            EXPECT_STREQ("Passed in invalid argument", e.what());
+            throw;
+        }
+    }, std::invalid_argument);
+}
 ```
 
 ## Usage
@@ -330,7 +350,7 @@ copy the generated cipher blocks into its input field, then select **Decrypt**.
 The primality-check panel accepts an integer and reports whether it is composite
 or probably prime.
 
-## Stuff
+## Additional info
 
 In src/lib_rsa/square_and_multiply.cpp we calculate:
 
@@ -353,6 +373,6 @@ for its platform, so CMake does not add the Windows `.lib` there. The use of
 
 ## TODOs
 
-- Indistinguishability Game
-- Factorization attacks on weak prime numbers
-- General Factorization algorithms (incl. Shor's algorithm? would need Qiskit maybe)
+- Integrate Indistinguishability Game into the TUI
+- Add logging feature to the TUI / library
+- Write tests for 'prime_generator.cpp'

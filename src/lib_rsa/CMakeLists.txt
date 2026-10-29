@@ -7,6 +7,9 @@ add_library(lib_rsa
     rsa_encryptor.cpp
     rsa_encryptor.cpp
     block_encoding.cpp
+    indistinguishability_game.cpp
+    pollards_algorithm.cpp
+    fermat_factorization.cpp
 )
 
 target_include_directories(lib_rsa PUBLIC include)

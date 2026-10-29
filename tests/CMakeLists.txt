@@ -20,6 +20,8 @@ add_executable(rsa_lib_tests_exe
     block_encoding_test.cpp
     rsa_encryptor_test.cpp
     rsa_decryptor_test.cpp
+    pollards_algorithm_test.cpp
+    fermat_factorization_test.cpp
 )
 
 target_link_libraries(rsa_lib_tests_exe 

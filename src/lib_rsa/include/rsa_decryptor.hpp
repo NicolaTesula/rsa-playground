@@ -29,6 +29,7 @@ class RSADecryptor {
         RSADecryptor(const std::uint32_t p, const std::uint32_t q);
         RSADecryptor(const std::uint8_t bit_width = 31);
         const PublicKey get_public_key() const;
+        PrivateKey get_private_key() const; // TODO: this is only intended for the TUI
         std::string decrypt_msg(const std::vector<std::uint64_t>& cipher) const;
         
     private:
